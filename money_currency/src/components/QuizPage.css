@@ -1,0 +1,346 @@
+/* Using a professional font stack for modern feel */
+body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    background-color: #f0f4f8; /* Light blue-gray background */
+    color: #333;
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Quiz Card Styling */
+.quiz-container {
+    background: #ffffff;
+    border-radius: 16px; /* Smooth rounded corners */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Prominent shadow */
+    max-width: 650px;
+    width: 100%;
+    margin: 40px auto;
+    padding: 40px 30px;
+    text-align: center;
+}
+
+/* Header/Score Area */
+.quiz-header {
+    margin-bottom: 30px;
+    text-align: center;
+    color: #1a237e; /* Deep Indigo for main titles */
+}
+
+.quiz-header h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 5px;
+}
+
+.quiz-header p {
+    font-size: 1.1rem;
+    color: #555;
+    font-weight: 600;
+}
+
+/* Question Text */
+.quiz-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    color: #4a148c; /* Dark Purple for question prominence */
+    font-weight: 700;
+}
+
+/* Question Index */
+.quiz-container h3, .question-counter { /* Added .question-counter for consistency */
+    color: #6a1b9a;
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+/* Options Grid Layout */
+.options {
+    display: grid;
+    grid-template-columns: 1fr; /* Default: Stacked */
+    gap: 15px;
+    margin: 30px 0;
+}
+
+/* Option Buttons Base Style */
+.options button {
+    padding: 18px 25px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #333;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    text-align: left;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Hover Effect */
+.options button:hover:not(:disabled) {
+    background-color: #e8eaf6;
+    border-color: #3f51b5; /* Primary Indigo hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* State Styling (Selected, Correct, Incorrect) */
+
+/* Selected (Pre-check) */
+.options button.selected {
+    border-color: #3f51b5; 
+    background: #e8eaf6;
+    color: #1a237e;
+    box-shadow: 0 0 0 3px #bbdefb; /* Subtle blue ring */
+}
+
+/* Correct Answer (Success Green) */
+.options button.correct {
+    background: #e6f6ec;
+    border-color: #4caf50; 
+    color: #1b5e20;
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.6); /* Green glow */
+}
+
+/* Incorrect Answer (Error Red) */
+.options button.incorrect {
+    background: #fcebeb; 
+    border-color: #f44336; 
+    color: #b71c1c;
+    font-weight: 700;
+    animation: shake 0.5s;
+}
+
+/* Disabled State after selection */
+.options button:disabled {
+    cursor: default;
+    opacity: 0.7;
+}
+
+/* Result Text */
+.result {
+    font-size: 1.4rem;
+    margin: 25px 0;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+/* Navigation/Action Buttons (Gold/Amber Accent) */
+.next-button, .restart-button, .scores-button { /* Added .scores-button for consistency */
+    padding: 12px 30px;
+    background-color: #ffc107; 
+    color: #1a237e; 
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-top: 20px;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 6px rgba(255, 193, 7, 0.4);
+}
+
+.next-button:hover, .restart-button:hover, .scores-button:hover {
+    background-color: #ffb300; 
+    transform: translateY(-2px);
+}
+
+.action-buttons-group {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+/* Final Score Page */
+.final-score {
+    font-size: 2.5rem;
+    margin: 20px 0 40px;
+    color: #4a148c; /* Used Dark Purple for contrast against chart */
+    font-weight: 800;
+    padding: 10px;
+    background: transparent; /* Changed to transparent since chart is main visual */
+    border-radius: 8px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Animations */
+@keyframes shake {
+  0%, 100% {transform: translateX(0);}
+  10%, 30%, 50%, 70%, 90% {transform: translateX(-5px);}
+  20%, 40%, 60%, 80% {transform: translateX(5px);}
+}
+
+/* ------------------------------------------- */
+/* --- Pie Chart Visualization Styles --- */
+/* ------------------------------------------- */
+
+.pie-chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 30px 0 40px; /* Adjusted margin for better spacing */
+}
+
+.pie-chart {
+    width: 180px; /* Increased size for prominence */
+    height: 180px;
+    border-radius: 50%;
+    
+    /* Position for overlaying the text circle */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Subtle outer shadow to lift it from the card */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); 
+}
+
+/* The inner circle (mask) to show the score percentage text */
+.pie-text {
+    width: 75%; /* Size of the cutout */
+    height: 75%;
+    background: #ffffff; /* Must match the card background color */
+    border-radius: 50%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem; /* Larger font for the percentage */
+    font-weight: 800;
+    color: #1a237e; /* Deep Indigo color for text */
+}
+
+.chart-legend {
+    margin-top: 25px;
+    font-size: 1rem;
+    color: #555;
+    font-weight: 600;
+}
+
+.chart-legend span {
+    font-weight: 700;
+    margin: 0 8px;
+    /* Colors are defined inline in the React component for dynamic styles */
+}
+
+/* --- Modal Styles (Ensuring they are also present) --- */
+/* Assuming modal styles are also in this file or imported */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    max-width: 450px;
+    width: 90%;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #1a237e;
+    font-size: 1.5rem;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #999;
+}
+
+.score-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.score-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px dashed #eee;
+    font-size: 1rem;
+}
+
+.score-item:last-child {
+    border-bottom: none;
+}
+
+.score-date {
+    color: #777;
+}
+
+.score-value {
+    font-weight: 700;
+    color: #4a148c;
+}
+/* ------------------------------------------- */
+
+
+/* Responsiveness (Desktop/Tablet) */
+@media (min-width: 600px) {
+    .options {
+        grid-template-columns: 1fr 1fr; /* Two columns for larger screens */
+    }
+}
+
+/* Responsiveness (Mobile) */
+@media (max-width: 500px) {
+    .quiz-container {
+        margin: 20px 10px;
+        padding: 25px 20px;
+    }
+    .options button {
+        font-size: 1rem;
+        padding: 15px;
+    }
+    .quiz-header h1 {
+        font-size: 1.8rem;
+    }
+    .pie-chart {
+        width: 140px; 
+        height: 140px;
+    }
+    .pie-text {
+        font-size: 1.5rem;
+    }
+}

@@ -3,9 +3,11 @@ import {
   ShoppingCart,
   DollarSign,
   RefreshCw,
-  CheckCircle
+  CheckCircle,
+  XCircle,
+  ArrowLeft
 } from "lucide-react";
-import "./MainPage.css"; // <-- custom styles
+import "./FirstPage.css";
 
 // Store items
 const STORE_ITEMS = [
@@ -25,19 +27,18 @@ const CURRENCY_VALUES = [
   { value: 5.0, name: "$5 Bill", label: "$5" }
 ];
 
-// Format currency
 const formatCurrency = (amt) => `$${amt.toFixed(2)}`;
 
-// Randomize price
 const randomizePrice = (basePrice) => {
   const variation = Math.random() * 0.5 - 0.25;
   return Math.round((basePrice + variation) * 100) / 100;
 };
 
-export default function MainPage() {
-  const [items] = useState(() =>
-    STORE_ITEMS.map((i) => ({ ...i, price: randomizePrice(i.basePrice) }))
-  );
+const generateRandomizedItems = () =>
+  STORE_ITEMS.map((i) => ({ ...i, price: randomizePrice(i.basePrice) }));
+
+export default function FirstPage({ onBack }) {
+  const [items, setItems] = useState(generateRandomizedItems);
   const [cart, setCart] = useState([]);
   const [payment, setPayment] = useState(0);
   const [message, setMessage] = useState("Pick items and pay!");
@@ -52,12 +53,26 @@ export default function MainPage() {
     [payment, subtotal]
   );
 
+  const reRandomizePrices = useCallback(() => {
+    setItems(generateRandomizedItems());
+    setMessage("Item prices have been re-randomized!");
+  }, []);
+
   const addItem = useCallback(
     (item) => {
-      setCart((c) => [...c, item]);
+      const newItemInCart = { ...item, cartKey: Date.now() + Math.random() };
+      setCart((c) => [...c, newItemInCart]);
       setMessage(`Added ${item.name}. Total: ${formatCurrency(subtotal + item.price)}`);
     },
     [subtotal]
+  );
+
+  const removeItem = useCallback(
+    (cartKey, name) => {
+      setCart((c) => c.filter((item) => item.cartKey !== cartKey));
+      setMessage(`Removed ${name}. Subtotal updated.`);
+    },
+    []
   );
 
   const addCurrency = useCallback(
@@ -77,25 +92,31 @@ export default function MainPage() {
 
   const checkout = () => {
     if (subtotal === 0) {
-      setMessage("Cart empty!");
+      setMessage("Cart empty! Nothing to check out.");
       return;
     }
     if (change >= 0) {
-      setMessage(`Done! Change: ${formatCurrency(change)}`);
+      setMessage(`Transaction Complete! Change: ${formatCurrency(change)}`);
+      reRandomizePrices();
       setTimeout(reset, 4000);
     } else {
-      setMessage(`You still owe ${formatCurrency(-change)}`);
+      setMessage(`You still owe ${formatCurrency(-change)}. Please add more payment.`);
     }
   };
 
   const reset = () => {
     setCart([]);
     setPayment(0);
-    setMessage("Reset! Start again.");
+    setMessage("Reset! Start a new transaction.");
   };
 
   return (
     <div className="store-container">
+      {/* Back button */}
+      <button className="back-btn" onClick={onBack || (() => alert("Go Back"))}>
+        <ArrowLeft size={18} /> Back
+      </button>
+
       {/* Header */}
       <header className="store-header">
         <h1>🛒 Money Math Store</h1>
@@ -106,6 +127,9 @@ export default function MainPage() {
       <section className="store-items">
         <h2>
           <ShoppingCart /> Items
+          <button className="randomize-btn" onClick={reRandomizePrices}>
+            <RefreshCw size={16} /> Prices
+          </button>
         </h2>
         <div className="items-grid">
           {items.map((it) => (
@@ -128,9 +152,17 @@ export default function MainPage() {
           {cart.length === 0 ? (
             <li>Cart is empty</li>
           ) : (
-            cart.map((c, i) => (
-              <li key={i}>
-                {c.icon} {c.name} - {formatCurrency(c.price)}
+            cart.map((c) => (
+              <li key={c.cartKey}>
+                <span>
+                  {c.icon} {c.name} - {formatCurrency(c.price)}
+                </span>
+                <button
+                  className="remove-btn"
+                  onClick={() => removeItem(c.cartKey, c.name)}
+                >
+                  <XCircle size={14} />
+                </button>
               </li>
             ))
           )}
@@ -151,7 +183,11 @@ export default function MainPage() {
           ))}
         </div>
         <p>Paid: {formatCurrency(payment)}</p>
-        <p>{change >= 0 ? `Change: ${formatCurrency(change)}` : `Owed: ${formatCurrency(-change)}`}</p>
+        <p className={change < 0 ? "owed" : "change"}>
+          {change >= 0
+            ? `Change: ${formatCurrency(change)}`
+            : `Owed: ${formatCurrency(-change)}`}
+        </p>
         <div className="actions">
           <button onClick={checkout} disabled={subtotal === 0 || change < 0}>
             <CheckCircle /> Checkout
